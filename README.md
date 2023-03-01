@@ -14,14 +14,11 @@ I ran across the NewEncoder library by gfvalvo which already had code in place f
 
 NewEncoder became the base that when combined with the stepper library significantly smoothed out the interaction between the encoder and the stepper. 
 
-MPG or manual pulse generator. These are quadrature step encoders that are cheap and easy to implement. Using a 5v source they output a 2 phase square wave (A and B outputs) with an offset that creates 4 possible states: 00, 10, 11, 01 for CW rotation and 00, 01, 11, 10 for CCW rotation.
+You will need to play with the stepperMaxSpeed and stepperAcceleration values to suit your hardware configuration. The speed and acceleration go hand-in-hand and will vary based on how you have configured your micro-stepping on the driver. The values in my version are for a Nema 23 configured for 1/2 step or 400 steps per revolution.
 
-Using the wave output below you would read Left to Right for clockwise rotation and Right to Left for counter-clockwise rotation to generate each of the 4 states. 
+stepperRotationMultiplier was added as a means to amplify the number of steps per pulse without changing your micro stepping. A default multiplier of 1 will rotate your chosen micro step amount for a single click of the encoder wheel. Upping the value to 2 will rotate 2 micro steps per single click, etc... 
 
-![image](https://user-images.githubusercontent.com/8764001/222147994-58a1b3f9-5a52-44f4-a8d6-bc03bf1c56e9.png)
+## Known Limitations
+When using the Arduino Uno, you are limited to only using a single encoder wheel based on the number of available interrupt pins on the board. This means you can only control one stepper or you would have to provide a means of switching outputs to manually select additional motors to control with the same wheel.
 
-Image credit https://commons.wikimedia.org/w/index.php?curid=22725391
-
-
-## Hardware Used for this Project
-See the Wiki page for relevant project hardware
+I have not tested but upgraindg to an ATMega may allow more than one. It's on my future to-do list to try.

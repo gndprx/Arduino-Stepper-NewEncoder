@@ -21,8 +21,12 @@ You will need to play with the stepperMaxSpeed and stepperAcceleration values to
 
 stepperRotationMultiplier was added as a means to amplify the number of steps per pulse without changing your micro stepping. A default multiplier of 1 will rotate your chosen micro step amount for a single click of the encoder wheel. Upping the value to 2 will rotate 2 micro steps per single click, etc... 
 
-## Known Limitations
+## ATMega Branch
 
-When using the Arduino Uno, you are limited to only using a single encoder wheel based on the number of available interrupt pins on the board. This means you can only control one stepper or you would have to provide a means of switching outputs to manually select additional motors to control with the same wheel.
+The ATMega branch will use the Arduino Mega and instantiate 3 instances of NewEncoder to allow multiple encoders and steppers to be controlled from the same board.
 
-I have not tested but upgraindg to an ATMega may allow more than one. It's on my future to-do list to try. The Mega should support 6 external interrupt pins which means in theory it could handle up to 3 encoder wheels at a time.
+Pins 2/3 for Encoder 1 and Stepper 1
+
+Pins 20/21 for Encoder 2 and Stepper 2
+
+Pins 18/19 for Encoder 3 and Stepper 3

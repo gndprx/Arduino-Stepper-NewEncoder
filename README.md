@@ -23,6 +23,8 @@ stepperRotationMultiplier was added as a means to amplify the number of steps pe
 
 ## Known Limitations
 
+**Use the ATMega branch if you want to use more than 1 encoder and 1 stepper on the same board**
+
 When using the Arduino Uno, you are limited to only using a single encoder wheel based on the number of available interrupt pins on the board. This means you can only control one stepper or you would have to provide a means of switching outputs to manually select additional motors to control with the same wheel.
 
 I have not tested but upgraindg to an ATMega may allow more than one. It's on my future to-do list to try. The Mega should support 6 external interrupt pins which means in theory it could handle up to 3 encoder wheels at a time.

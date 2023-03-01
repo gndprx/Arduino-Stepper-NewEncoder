@@ -4,40 +4,55 @@
 // Setup Encoder 
 const byte EncChA_Pin = 2;
 const byte EncChB_Pin = 3;
+const byte Enc2ChA_Pin = 20;
+const byte Enc2ChB_Pin = 21;
+const byte Enc3ChA_Pin = 18;
+const byte Enc3ChB_Pin = 19;
 const int minVal = -32767;
 const int maxVal =  32767;
 const int startVal = 0;
 int16_t currentValue = 0;
 int16_t prevEncoderValue = -1;
+int16_t currentValue2 = 0;
+int16_t prevEncoderValue2 = -1;
+int16_t currentValue3 = 0;
+int16_t prevEncoderValue3 = -1;
 
-// Pins 2 and 3 should work for many processors, including Uno. See README for meaning of constructor arguments.
-// Use FULL_PULSE for encoders that produce one complete quadrature pulse per detnet, such as: https://www.adafruit.com/product/377
-// Use HALF_PULSE for endoders that produce one complete quadrature pulse for every two detents, such as: https://www.mouser.com/ProductDetail/alps/ec11e15244g1/?qs=YMSFtX0bdJDiV4LBO61anw==&countrycode=US&currencycode=USD
 NewEncoder myEncoderObject(EncChA_Pin, EncChB_Pin, minVal, maxVal, startVal, FULL_PULSE);
+NewEncoder myEncoderObject2(Enc2ChA_Pin, Enc2ChB_Pin, minVal, maxVal, startVal, FULL_PULSE);
+NewEncoder myEncoderObject3(Enc3ChA_Pin, Enc3ChB_Pin, minVal, maxVal, startVal, FULL_PULSE);
 
-// Setup Stepper
+// Setup Stepper 1
 AccelStepper stepper (1, 8, 9); //pulses, clk, dir
 int RotateCounter = 0;
 int stepperMaxSpeed = 8000;
 int stepperAcceleration = 16000;
 int stepperRotationMultiplier = 1;
 
+// Setup Stepper 2
+AccelStepper stepper2 (1, 10, 11); //pulses, clk, dir
+int RotateCounter2 = 0;
+int stepperMaxSpeed2 = 8000;
+int stepperAcceleration2 = 16000;
+int stepperRotationMultiplier2 = 1;
+
+// Setup Stepper 3
+AccelStepper stepper3 (1, 12, 13); //pulses, clk, dir
+int RotateCounter3 = 0;
+int stepperMaxSpeed3 = 8000;
+int stepperAcceleration3 = 16000;
+int stepperRotationMultiplier3 = 1;
+
 void setup() {
-  // myEncState is a variable of type EncoderState
-  // EncoderState is a structured variable that has two "simple" variables
-  // .currentValue which is type int16_t
-  // (16 bit signed integer valuerange -36767 to 36767)
-  // currentValue counts up / down with each pulse created through rotating the encoder
-  // and
-  // .currentClick which is of type "EncoderClick"
-  // the variable type "EncoderClick" can have just 3 values
-  // NoClick, DownClick, UpClick where "click" means a "pulse" created through rotating the encoder
   NewEncoder::EncoderState myEncState;
+  NewEncoder::EncoderState myEncState2;
+  NewEncoder::EncoderState myEncState3;
 
   Serial.begin(115200);    
 
+  // Encoder 1
   if (!myEncoderObject.begin()) {
-    Serial.println("Encoder Failed to Start. Check pin assignments and available interrupts. Aborting.");
+    Serial.println("Encoder 1 Failed to Start. Check pin assignments and available interrupts. Aborting.");
     while (1) {
       yield();
     }
@@ -47,13 +62,49 @@ void setup() {
     prevEncoderValue = myEncState.currentValue;
   }
 
+  // Encoder 2
+  if (!myEncoderObject2.begin()) {
+    Serial.println("Encoder 2 Failed to Start. Check pin assignments and available interrupts. Aborting.");
+    while (1) {
+      yield();
+    }
+  } else {
+    // store values of currentValue and EncoderClick into variable myEncState
+    myEncoderObject2.getState(myEncState2);
+    prevEncoderValue2 = myEncState2.currentValue;
+  }
+
+  // Encoder 3
+if (!myEncoderObject3.begin()) {
+    Serial.println("Encoder 2 Failed to Start. Check pin assignments and available interrupts. Aborting.");
+    while (1) {
+      yield();
+    }
+  } else {
+    // store values of currentValue and EncoderClick into variable myEncState
+    myEncoderObject3.getState(myEncState3);
+    prevEncoderValue3 = myEncState3.currentValue;
+  }
+
+  // Stepper 1
   stepper.setMaxSpeed(stepperMaxSpeed);
   stepper.setAcceleration(stepperAcceleration);
+
+  // Stepper 2
+  stepper2.setMaxSpeed(stepperMaxSpeed2);
+  stepper2.setAcceleration(stepperAcceleration2);
+
+  // Stepper 3
+  stepper3.setMaxSpeed(stepperMaxSpeed3);
+  stepper3.setAcceleration(stepperAcceleration3);
 }
 
 void loop() {
   NewEncoder::EncoderState myCurrentEncoderState;
+  NewEncoder::EncoderState myCurrentEncoderState2;
+  NewEncoder::EncoderState myCurrentEncoderState3;
 
+  // Encoder 1
   // store actual values into variable myCurrentEncoderState
   if (myEncoderObject.getState(myCurrentEncoderState)) {
     currentValue = myCurrentEncoderState.currentValue;
@@ -63,10 +114,10 @@ void loop() {
 
       switch (myCurrentEncoderState.currentClick) {
         case NewEncoder::UpClick:
-          RotateCounter = RotateCounter + stepperRotationMultiplier; // Encoder registered an UpClick so increase the rotation counter
+          RotateCounter = RotateCounter + stepperRotationMultiplier;
           break;
         case NewEncoder::DownClick:
-          RotateCounter = RotateCounter - stepperRotationMultiplier; // Encoder registered a DownClick so decrease the rotation counter
+          RotateCounter = RotateCounter - stepperRotationMultiplier;
           break;
 
         default: break;        
@@ -88,7 +139,79 @@ void loop() {
           break;
       }
   }
+
+  // Encoder 2
+  // store actual values into variable myCurrentEncoderState2
+  if (myEncoderObject2.getState(myCurrentEncoderState2)) {
+    currentValue2 = myCurrentEncoderState2.currentValue;
+
+    // if currentValue has REALLY changed print new currentValue
+    if (currentValue2 != prevEncoderValue2) {
+
+      switch (myCurrentEncoderState2.currentClick) {
+        case NewEncoder::UpClick:
+          RotateCounter2 = RotateCounter2 + stepperRotationMultiplier2;
+          break;
+        case NewEncoder::DownClick:
+          RotateCounter2 = RotateCounter2 - stepperRotationMultiplier2;
+          break;
+
+        default: break;        
+      }
+      prevEncoderValue2 = currentValue2;
+      RotateStepper2();
+
+    } else
+      switch (myCurrentEncoderState2.currentClick) {
+        case NewEncoder::UpClick:
+          Serial.println("at upper limit.");
+          break;
+
+        case NewEncoder::DownClick:
+          Serial.println("at lower limit.");
+          break;
+
+        default:
+          break;
+      }
+  }
+
+  // Encoder 3
+  // store actual values into variable myCurrentEncoderState3
+  if (myEncoderObject3.getState(myCurrentEncoderState3)) {
+    currentValue3 = myCurrentEncoderState3.currentValue;
+
+    if (currentValue3 != prevEncoderValue3) {
+
+      switch (myCurrentEncoderState3.currentClick) {
+        case NewEncoder::UpClick:
+          RotateCounter3 = RotateCounter3 + stepperRotationMultiplier3;
+          break;
+        case NewEncoder::DownClick:
+          RotateCounter3 = RotateCounter3 - stepperRotationMultiplier3;
+          break;
+
+        default: break;        
+      }
+      prevEncoderValue3 = currentValue3;
+      RotateStepper3();
+
+    } else
+      switch (myCurrentEncoderState3.currentClick) {
+        case NewEncoder::UpClick:
+          Serial.println("at upper limit.");
+          break;
+
+        case NewEncoder::DownClick:
+          Serial.println("at lower limit.");
+          break;
+
+        default:
+          break;
+      }
+  }
 }
+
 
 void RotateStepper()
 {
@@ -97,6 +220,26 @@ void RotateStepper()
     while(stepper.distanceToGo() != 0)
     {
       stepper.runToNewPosition(RotateCounter);
+    }
+}
+
+void RotateStepper2()
+{
+    stepper2.enableOutputs();
+    stepper2.moveTo(RotateCounter2);
+    while(stepper2.distanceToGo() != 0)
+    {
+      stepper2.runToNewPosition(RotateCounter2);
+    }
+}
+
+void RotateStepper3()
+{
+    stepper3.enableOutputs();
+    stepper3.moveTo(RotateCounter3);
+    while(stepper3.distanceToGo() != 0)
+    {
+      stepper3.runToNewPosition(RotateCounter3);
     }
 }
 

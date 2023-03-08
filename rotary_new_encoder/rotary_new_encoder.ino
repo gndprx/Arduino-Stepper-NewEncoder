@@ -27,7 +27,7 @@ AccelStepper stepper (1, 8, 9); //pulses, clk, dir
 int RotateCounter = 0;
 int stepperMaxSpeed = 8000;
 int stepperAcceleration = 16000;
-int stepperRotationMultiplier = 1;
+int stepperRotationMultiplier = 16;
 
 // Setup Stepper 2
 AccelStepper stepper2 (1, 10, 11); //pulses, clk, dir
@@ -41,7 +41,7 @@ AccelStepper stepper3 (1, 12, 13); //pulses, clk, dir
 int RotateCounter3 = 0;
 int stepperMaxSpeed3 = 8000;
 int stepperAcceleration3 = 16000;
-int stepperRotationMultiplier3 = 1;
+int stepperRotationMultiplier3 = 4;
 
 void setup() {
   NewEncoder::EncoderState myEncState;
